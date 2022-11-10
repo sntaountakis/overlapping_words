@@ -1,7 +1,8 @@
 import React from 'react';
-
+import {Alert, CContainer, CRow, CCol, CFormInput, CForm, CFormSelect, CFormCheck, CButton} from '@coreui/react';
 import './App.css';
-
+import '@coreui/coreui/dist/css/coreui.min.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
 import WordForm from './Form/Form'
 import Output from './Output/Output'
 
@@ -9,9 +10,6 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     
-    this.state = {
-      results: ''
-    }
   }
 
   componentDidMount() {
@@ -20,16 +18,11 @@ class App extends React.Component {
 
 
   render() {
-    const {results} = this.state;
+    
     return (
-      <div className="App">
-        <WordForm  result={results}/>
-        
-        {results.length > 0 && 
-          <Output result={results}/>
-        }
-
-      </div>
+      <CContainer>
+        <WordForm />
+      </CContainer>
     );
   }
 }

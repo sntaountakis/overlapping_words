@@ -1,73 +1,63 @@
+import React from 'react';
+import {CFormInput} from '@coreui/react'
 
-import React from "react";
-
-//import './inputbox.css'
-
-export default class Input extends React.Component {
+class InputBox extends React.Component {
+  
   constructor(props) {
     super(props);
-
+    this.label = props.placeholder;
     this.state = {
-   		type: props.type,
-      active: (props.locked && props.active) || false,
-      value: props.value || "",
-      error: props.error || "",
-      label: props.label || "Label",
-      id: props.id || "",
+      error: false
     };
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleWordChange = this.handleWordChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    this.handleFeedback = this.handleFeedback.bind(this);
+
   }
 
-  // Lifting state up from parents methods
-  // which should be passed through props
-  handleChange(e){
-  	const value = e.target.value;
-  	this.props.onValueChange(value);
-    this.setState({ value, error: "" });
-  }
-  
-  changeValue(event) {
-    const value = event.target.value;
-    this.setState({ value, error: "" });
+  componentDidMount() {
+    console.log("Mounted");
   }
 
-  handleKeyPress(event) {
-    if (event.which === 13) {
-      this.setState({ value: this.props.predicted });
+  handleBlur(e) {
+    if (e.target.validity.patternMismatch) {
+      this.setState({error: true});
+    }
+    else {
+      this.setState({error: false});
     }
   }
 
+  handleFeedback(error) {
+    if(error) {
+      return "Please provide a valid word.";
+    }
+  }
+
+  handleWordChange(e) {
+    const value = e.target.value;
+    this.props.onValueChange(value);
+  }
+
   render() {
-
-   	// Make parent component the single source of thruth
-   	const value = this.props.value;
-
-    const { type, active, error, label, id } = this.state;
-    const { predicted, locked } = this.props;
-    const fieldClassName = `${this.props.class} field ${(locked ? active : active || value) &&
-      "active"} ${locked && !active && "locked"}`;
+    const {error} = this.state;
 
     return (
-      <div className={fieldClassName} style={this.props.style}>
-        {active &&
-          value &&
-          predicted &&
-          predicted.includes(value) && <p className="predicted">{predicted}</p>}
-        <input
-          id={id}
-          type={type}
-          value={value}
-          placeholder={label}
-          onChange={this.handleChange}
-          onKeyPress={this.handleKeyPress.bind(this)}
-          onFocus={() => !locked && this.setState({ active: true })}
-          onBlur={() => !locked && this.setState({ active: false })}
-        />
-        <label htmlFor={1} className={error && "error"}>
-          {error || label}
-        </label>
-      </div>
-    );
+          <CFormInput
+          placeholder={this.label}                     
+          type="text"
+          onChange={this.handleWordChange}
+          oninvalid="this.setCustomValidity('Not Valid')"
+          pattern={"^[a-zA-Z]{1,45}$"}
+          onBlur={this.handleBlur}
+          invalid={error}
+          feedback={this.handleFeedback(error)}
+          required
+          />
+
+    )
   }
 }
+
+export default InputBox;

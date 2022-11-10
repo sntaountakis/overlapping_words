@@ -1,8 +1,11 @@
 import React from 'react';
 import axios from 'axios';
+import {Alert, CForm, CCol, CFormInput, CRow, CButton, CSpinner} from '@coreui/react';
 
-import Input from '../Input/InputBox.jsx'
+import InputBox from '../Input/InputBox.jsx'
 import InputBtn from '../Input/InputBtn.jsx'
+
+import './Form.css';
 
 class WordForm extends React.Component {
 
@@ -10,9 +13,12 @@ class WordForm extends React.Component {
       super(props);
       this.state = {
         word: '',
-        overlappedWord: ''
+        overlappedWord: '',
+        disable: false
       };
-  
+
+      this.handleWordChange = this.handleWordChange.bind(this);
+      this.handleOverlappedWordChange = this.handleOverlappedWordChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.validateForm = this.validateForm.bind(this);
     }
@@ -41,11 +47,14 @@ class WordForm extends React.Component {
       this.setState({word: word});
     }
   
-    handleOverlappedWordChange(overlapedWord) {
-      this.setState({overlapedWord: overlapedWord});
+    handleOverlappedWordChange(overlappedWord) {
+      this.setState({overlappedWord: overlappedWord});
     }
-  
+    
     handleSubmit(e){
+
+      this.setState({disable: true});
+
       e.preventDefault();
       if(!this.validateForm())
         return;
@@ -56,50 +65,52 @@ class WordForm extends React.Component {
         word: word,
         overlappedWord: overlappedWord
       }
-  
-      axios.post('/index',
-                {Headers: {'Accept': 'application/json', 
-                          'Content-Type': 'application/json'}},
-                {data: {...data}})
-                .then( res => {
+
+      console.log(data)
+      
+      axios.post('/index', data).then( res => {
+                  console.log(res.data);
                   // TODO: Handle response
                   //this.displayResults();
                 })
       
+      this.setState({disable: false});
     }
     
     render() {
-      const {word, overlappedWord} = this.state;
+      const {word, overlappedWord, wordError, overlappedError, disable} = this.state;
       return (
-          <div id='submit-form'>
-            <form 
-                  className='wordsForm'
-                  onSubmit={this.handleSubmit}>
-              
-              <Input
-                    id={1}
-                    value={word}
-                    onValueChange={this.handleWordChange}
-                    type="text"
-                    label="Word"
-                    locked={false}
-                    active={false}
-              />
-  
-              <Input
-                    id={2}
-                    value={overlappedWord}
-                    onValueChange={this.handleOverlappedWordChange}
-                    type="text"
-                    label="Overlapped Word"
-                    locked={false}
-                    active={false}
-              />
-  
-              <InputBtn />
-            
-            </form>
-          </div>
+          <CForm onSubmit={this.handleSubmit}>
+            <CRow>
+              <CCol s>              
+                <InputBox
+                          placeholder={"Word"}                     
+                          onValueChange={this.handleWordChange}
+                          oninvalid="this.setCustomValidity('Not Valid')"
+                />
+              </CCol>
+
+              <CCol s>
+                <InputBox
+                          placeholder={"Overlapped Word"}
+                          type="text"
+                          onValueChange={this.handleOverlappedWordChange}
+                />
+              </CCol>
+            </CRow>
+            <CRow xs={{ gutter: 5 }}className='justify-content-end'>         
+              <CCol xs="auto">
+                <CButton 
+                        type="submit"
+                        disabled={disable}>
+                        {disable == true && 
+                          <CSpinner coomponent="span" size="sm" aria-hidden="true"/>
+                        }
+                        Find
+                </CButton>
+              </CCol>
+            </CRow>
+          </CForm>
       );
     }
 }
