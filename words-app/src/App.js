@@ -20,7 +20,7 @@ class App extends React.Component {
   render() {
     
     return (
-      <CContainer>
+      <CContainer className='main-container'>
         <WordForm />
       </CContainer>
     );

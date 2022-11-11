@@ -22,6 +22,7 @@ class InputBox extends React.Component {
 
   handleBlur(e) {
     if (e.target.validity.patternMismatch) {
+      console.log("tets");
       this.setState({error: true});
     }
     else {
@@ -31,6 +32,7 @@ class InputBox extends React.Component {
 
   handleFeedback(error) {
     if(error) {
+      
       return "Please provide a valid word.";
     }
   }

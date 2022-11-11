@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import {Alert, CForm, CCol, CFormInput, CRow, CButton, CSpinner} from '@coreui/react';
+import {Alert, CForm, CCol, CContainer, CButton, CSpinner, CCollapse, CCard, CCardBody} from '@coreui/react';
 
 import InputBox from '../Input/InputBox.jsx'
 import InputBtn from '../Input/InputBtn.jsx'
@@ -13,12 +13,15 @@ class WordForm extends React.Component {
       super(props);
       this.state = {
         word: '',
-        overlappedWord: '',
-        disable: false
+        secondWord: '',
+        disable: false,
+        visible: false,
+        responseWord: '',
+        responseLetters: 0
       };
 
       this.handleWordChange = this.handleWordChange.bind(this);
-      this.handleOverlappedWordChange = this.handleOverlappedWordChange.bind(this);
+      this.handleSecondWordChange = this.handleSecondWordChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.validateForm = this.validateForm.bind(this);
     }
@@ -29,7 +32,7 @@ class WordForm extends React.Component {
   
     validateForm() {
       
-      const {word, overlappedWord} = this.state;
+      const {word, secondWord} = this.state;
       
       // assert both words contain only letters from the alphabet
   
@@ -47,69 +50,101 @@ class WordForm extends React.Component {
       this.setState({word: word});
     }
   
-    handleOverlappedWordChange(overlappedWord) {
-      this.setState({overlappedWord: overlappedWord});
+    handleSecondWordChange(secondWord) {
+      this.setState({secondWord: secondWord});
     }
     
     handleSubmit(e){
 
       this.setState({disable: true});
+      this.setState({visible: false});
 
       e.preventDefault();
       if(!this.validateForm())
         return;
       
-      const {word, overlappedWord} = this.state;
+      const {word, secondWord} = this.state;
   
       const data = {
         word: word,
-        overlappedWord: overlappedWord
+        second_word: secondWord
       }
 
       console.log(data)
       
       axios.post('/index', data).then( res => {
-                  console.log(res.data);
-                  // TODO: Handle response
-                  //this.displayResults();
+    
+                  this.handleResponse(res.data);
                 })
       
       this.setState({disable: false});
     }
+
+    handleResponse(data) {
+      // Check Response from server
+
+      const word = data.word;
+      const nletters = data.len;
+      this.setState({responseWord: word});
+      this.setState({responseLetters: nletters});
+      this.setState({visible: true});
+      
+    }
+
     
     render() {
-      const {word, overlappedWord, wordError, overlappedError, disable} = this.state;
+      const {word, disable, visible, responseWord, responseLetters} = this.state;
       return (
-          <CForm onSubmit={this.handleSubmit}>
-            <CRow>
-              <CCol s>              
+          <CForm className="row g-3" onSubmit={this.handleSubmit}>
+            
+              <CCol>              
                 <InputBox
                           placeholder={"Word"}                     
+                          type="text"
                           onValueChange={this.handleWordChange}
-                          oninvalid="this.setCustomValidity('Not Valid')"
                 />
               </CCol>
 
-              <CCol s>
+              <CCol>
                 <InputBox
-                          placeholder={"Overlapped Word"}
+                          placeholder={"Second Word"}
                           type="text"
-                          onValueChange={this.handleOverlappedWordChange}
+                          onValueChange={this.handleSecondWordChange}
                 />
               </CCol>
-            </CRow>
-            <CRow xs={{ gutter: 5 }}className='justify-content-end'>         
+            
+                     
               <CCol xs="auto">
                 <CButton 
                         type="submit"
                         disabled={disable}>
-                        {disable == true && 
+                        {disable && 
                           <CSpinner coomponent="span" size="sm" aria-hidden="true"/>
                         }
                         Find
                 </CButton>
               </CCol>
-            </CRow>
+            
+          
+            <CCollapse className="collapse-response" visible={visible}>
+
+            <CCard style={{width: "100%"}}className="mt-3">
+
+              <CCardBody>
+                  Ovelapping characters: {responseWord}
+              </CCardBody>
+
+            </CCard>
+            <CCard style={{width: "100%"}}className="mt-3">
+
+              <CCardBody>
+                Number of characters: {responseLetters}
+              </CCardBody>
+
+            </CCard>
+            
+            </CCollapse>
+          
           </CForm>
       );
     }
