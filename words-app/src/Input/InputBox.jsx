@@ -33,13 +33,14 @@ class InputBox extends React.Component {
   handleFeedback(error) {
     if(error) {
       
-      return "Please provide a valid word.";
+      return "Please provide a word.";
     }
   }
 
   handleWordChange(e) {
     const value = e.target.value;
     this.props.onValueChange(value);
+    this.setState({error: false});
   }
 
   render() {
@@ -50,9 +51,7 @@ class InputBox extends React.Component {
           placeholder={this.label}                     
           type="text"
           onChange={this.handleWordChange}
-          oninvalid="this.setCustomValidity('Not Valid')"
-          pattern={"^[a-zA-Z]{1,45}$"}
-          onBlur={this.handleBlur}
+          onInvalid={() => this.setState({error: true})}
           invalid={error}
           feedback={this.handleFeedback(error)}
           required

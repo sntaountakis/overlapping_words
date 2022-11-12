@@ -1,10 +1,10 @@
 from flask import Flask, request, jsonify, abort
-from api.algo.detect_overlap import detect_overlap
+from algo.detect_overlap import detect_overlap
 
 app = Flask(__name__)
 
-@app.route('/')
-@app.route('/index', methods=['POST'])
+
+@app.route('/api/overlapping', methods=['POST'])
 def index():
     
     # See how to bullet proof check everything
