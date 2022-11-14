@@ -19,8 +19,8 @@ cd overlapping_words/words-app
 ```
 docker compose up
 ```
-### **NOTE:** Earlier versions of Docker would require a seperate installation of docker-compose
-### and running the project with:
+
+**NOTE:** Earlier versions of Docker would require a seperate installation of docker-compose and running the project with:
 
 ```
 docker-compose up
