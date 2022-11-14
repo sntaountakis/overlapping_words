@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify, abort, Blueprint
-from api import create_app
 from api.algo.detect_overlap import detect_overlap
 
 bp = Blueprint('api', __name__, url_prefix='/api')
