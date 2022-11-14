@@ -25,15 +25,10 @@ class App extends React.Component {
   }
 
   handleResponse(data) {
-    // Check Response from server
-
-    // TODO: Unite setStates 
-    this.setState({ responseWord: data.word });
-    this.setState({ wordLenght: data.len });
-    this.setState({ visible: true });
-    console.log(data);
+    this.setState({ responseWord: data.word, 
+                    wordLenght: data.len,
+                    visible: true });
   }
-
 
   render() {
     const { responseWord, wordLenght, visible } = this.state;

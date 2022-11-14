@@ -11,7 +11,6 @@ class InputBox extends React.Component {
     };
 
     this.handleWordChange = this.handleWordChange.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
     this.handleFeedback = this.handleFeedback.bind(this);
     this.handleInvalid = this.handleInvalid.bind(this);
   }
@@ -20,26 +19,16 @@ class InputBox extends React.Component {
     console.log("Mounted");
   }
 
-  handleBlur(e) {
-    if (e.target.validity.patternMismatch) {
-      console.log("tets");
-      this.setState({ error: true });
-    }
-    else {
-      this.setState({ error: false });
-    }
+  handleWordChange(e) {
+    const value = e.target.value;
+    this.props.onValueChange(value);
+    this.setState({ error: false });
   }
 
   handleFeedback(error) {
     if (error) {
       return "Please provide a word.";
     }
-  }
-
-  handleWordChange(e) {
-    const value = e.target.value;
-    this.props.onValueChange(value);
-    this.setState({ error: false });
   }
 
   handleInvalid(e) {
