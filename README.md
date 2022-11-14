@@ -1,3 +1,18 @@
 Overlapping words detector
 
-## A Technical challenge as part of the recruitment process at sendsteps
+### A Web Application that gives the maximum overlapping characters over two words.
+
+## Prerequisites
+
+- Docker
+
+## Instructions
+
+### Clone Repository:
+
+`git clone https://github.com/sntaountakis/overlapping_words
+cd overlapping_words/words-app`
+
+### Run the project
+
+`docker-compose up`
