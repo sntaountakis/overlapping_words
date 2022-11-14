@@ -1,22 +1,30 @@
-from flask import Flask, request, jsonify, abort
-from algo.detect_overlap import detect_overlap
+from flask import Flask, request, jsonify, abort, Blueprint
+from api import create_app
+from api.algo.detect_overlap import detect_overlap
 
-app = Flask(__name__)
+bp = Blueprint('api', __name__, url_prefix='/api')
 
+@bp.errorhandler(400)
+def bad_request(error):
+    return jsonify(error = error.description), 400
 
-@app.route('/api/overlapping', methods=['POST'])
+@bp.route('/overlap', methods=['POST'])
 def index():
-    
-    # See how to bullet proof check everything
-
     data = request.get_json()
-    print(data)
+    
     if not data:
-        abort(400, 'word field is empty')
+        abort(400, 'Could not fetch data')
     
     word = data['word']
     second_word = data['second_word']
 
+    if not word or not second_word:
+        abort(400, 'Field cannot be empty')
+
     overlap_len, overlap_str = detect_overlap(word, second_word)
 
     return jsonify({"word": overlap_str, "len": overlap_len})
+
+@bp.route('/hello')
+def hello():
+    return 'Hello, World!'

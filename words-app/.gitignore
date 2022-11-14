@@ -25,3 +25,5 @@ yarn-error.log*
 venv
 __pycache__
 .yarn
+.yarnrc.yml
+package-lock.json

@@ -14,32 +14,16 @@ class WordForm extends React.Component {
       word: '',
       secondWord: '',
       disable: false,
+      serverError: ''
     };
 
     this.handleWordChange = this.handleWordChange.bind(this);
     this.handleSecondWordChange = this.handleSecondWordChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.validateForm = this.validateForm.bind(this);
   }
 
   componentDidMount() {
     console.log("Mounted");
-  }
-
-  validateForm() {
-
-    //const { word, secondWord } = this.state;
-
-    // assert both words contain only letters from the alphabet
-
-    // assert overlapedWord is the same or smaller than word
-
-    // assert none of the fields is empty
-
-    // assert maximum word length
-
-    // For now return true
-    return true;
   }
 
   handleWordChange(word) {
@@ -51,15 +35,10 @@ class WordForm extends React.Component {
   }
 
   handleSubmit(e) {
-
+    e.preventDefault();
+    
     this.setState({ disable: true });
     this.setState({ visible: false });
-
-    e.preventDefault();
-
-    if (!this.validateForm()) {
-      return;
-    }
 
     const { word, secondWord } = this.state;
 
@@ -70,20 +49,28 @@ class WordForm extends React.Component {
 
     console.log(data)
 
-    axios.post('/api/overlapping', data).then(res => {
+    axios.post('/api/overlap', data).then(res => {
+      this.setState({ serverError: '' });
       this.props.onResponse(res.data);
+    }).catch(err => {
+      if (err.response) {
+        this.setState({ serverError: err.response.data.error });
+      }
+      else {
+        this.setState({ serverError: "Something went wrong in our side. Please try again" });
+      }
     })
 
     this.setState({ disable: false });
   }
 
   render() {
-    const { disable } = this.state;
+    const { disable, serverError } = this.state;
     return (
-      <CCard>
-        <CCardHeader>Overlap Detector</CCardHeader>
+      <CCard className='border-secondary'>
+        <CCardHeader className='border-secondary'>Overlap Detector</CCardHeader>
         <CCardBody>
-          <CCardText>Detects the maximum overlap between two words.</CCardText>
+          <CCardText>Please enter two words to find their maximum overlap.</CCardText>
           <CForm className="row g-5" onSubmit={this.handleSubmit}>
             <CCol sm={6}>
               <InputBox
@@ -108,6 +95,9 @@ class WordForm extends React.Component {
                 }
                 Find
               </CButton>
+            </CCol>
+            <CCol>
+              <p style={{ color: "red" }}>{serverError}</p>
             </CCol>
           </CForm>
         </CCardBody>
