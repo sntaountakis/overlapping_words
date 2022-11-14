@@ -4,7 +4,7 @@ Overlapping words detector
 
 ## Prerequisites
 
-- Docker
+- Docker (Tested on docker v.20.10.21)
 
 ## Instructions
 
@@ -16,4 +16,12 @@ cd overlapping_words/words-app
 ```
 ### Run the project
 
-`docker-compose up`
+```
+docker compose up
+```
+### **NOTE:** Earlier versions of Docker would require a seperate installation of docker-compose
+### and running the project with:
+
+```
+docker-compose up
+```
