@@ -14,7 +14,7 @@ Overlapping words detector
 git clone https://github.com/sntaountakis/overlapping_words
 cd overlapping_words/words-app
 ```
-## Run the project
+### Run the project
 
 ```
 docker compose up
