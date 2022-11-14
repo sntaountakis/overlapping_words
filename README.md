@@ -10,9 +10,10 @@ Overlapping words detector
 
 ### Clone Repository:
 
-`git clone https://github.com/sntaountakis/overlapping_words
-cd overlapping_words/words-app`
-
+```
+git clone https://github.com/sntaountakis/overlapping_words
+cd overlapping_words/words-app
+```
 ### Run the project
 
 `docker-compose up`
